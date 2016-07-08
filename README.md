@@ -23,6 +23,10 @@ Additionally, a copy of the reference genome (e.g. HG19) in FASTA format
 must be available.
 
 Download
+===========
+The program is freely available under the GPLv3 license from GitHub at:
+https://github.com/OSU-SRLab/MANTIS
+
 
 Usage
 =====
