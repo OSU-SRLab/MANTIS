@@ -11,9 +11,21 @@ from helpers import iteritems, check_bedfile_format
 from defaults import load_settings, Parameter
 
 
+
 if __name__ == "__main__":
     prog_name = 'Microsatellite Analysis for Normal-Tumor InStability (v1.0.3)'
     print(prog_name)
+
+    # Make sure Pysam is available in environment
+    try:
+        __import__('imp').find_module('pysam')
+        # Everything is fine; pysam is available
+    except ImportError:
+        # Pysam not found
+        print('Error: You must have Pysam available in your environment!')
+        print('Please check your $PYTHONPATH to make sure you have properly ' +
+            'included Pysam in it.')
+        exit(1)
 
     parser = argparse.ArgumentParser(description=prog_name)
 
@@ -151,14 +163,6 @@ if __name__ == "__main__":
         output_dir = os.path.dirname(config['output_filepath'])
         if not os.path.isdir(output_dir):
             os.makedirs(output_dir)         
-
-    num_threads = args.threads
-    if num_threads < 1:
-        print('Error: Must use at least one process.')
-        exit()
-    else:
-        config['threads'] = num_threads
-
 
     output_filepath = os.path.abspath(args.output)
 
