@@ -102,3 +102,23 @@ def kmer_repeat_count(kmer, sequence, offset = 0):
             break
     return repeats
 # end kmer_repeat_count()
+
+# Checks to make sure required modules are present in environment
+def required_modules_present(modules):
+    missing = []
+    for module in modules:
+        try:
+            __import__('imp').find_module(module.lower())
+            # Everything is fine; module is available
+        except ImportError:
+            # Module not found
+            missing.append(module)
+
+    if len(missing):
+        for module in modules:            
+            print('Error: You must have {0} available in your environment!'.format(module))
+        print('Please check your $PYTHONPATH to make sure you have properly ' +
+            'included required moudles/libraries in it.')
+        exit(1)
+    return True
+    # end required_modules_present()

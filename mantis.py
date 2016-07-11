@@ -7,7 +7,7 @@ import sys
 import argparse
 import operator
 import subprocess
-from helpers import iteritems, check_bedfile_format
+from helpers import iteritems, check_bedfile_format, required_modules_present
 from defaults import load_settings, Parameter
 
 
@@ -16,16 +16,9 @@ if __name__ == "__main__":
     prog_name = 'Microsatellite Analysis for Normal-Tumor InStability (v1.0.3)'
     print(prog_name)
 
-    # Make sure Pysam is available in environment
-    try:
-        __import__('imp').find_module('pysam')
-        # Everything is fine; pysam is available
-    except ImportError:
-        # Pysam not found
-        print('Error: You must have Pysam available in your environment!')
-        print('Please check your $PYTHONPATH to make sure you have properly ' +
-            'included Pysam in it.')
-        exit(1)
+    # Make sure Pysam and NumPy are available in environment
+    required_modules_present(['Pysam', 'NumPy'])
+
 
     parser = argparse.ArgumentParser(description=prog_name)
 
@@ -70,6 +63,14 @@ if __name__ == "__main__":
     parser.add_argument('--genome', dest='genome', type=str,
         help='Path to reference genome (FASTA).')
 
+    parser.add_argument('--difference-cutoff', dest='dif_cutoff', type=float,
+        help='Default difference cutoff value for calling a sample unstable.')
+
+    parser.add_argument('--distance-cutoff', dest='euc_cutoff', type=float,
+        help='Default distance cutoff value for calling a sample unstable.')
+
+    parser.add_argument('--dissimilarity-cutoff', dest='cos_cutoff', type=float,
+        help='Default dissimilarity cutoff value for calling a sample unstable.')
 
     args = parser.parse_args()
 
@@ -98,6 +99,9 @@ if __name__ == "__main__":
         Parameter(key='mrr', default=3),
         Parameter(key='sd', default=3.0),
         Parameter(key='threads', default=1),
+        Parameter(key='dif_cutoff', default=0.4),
+        Parameter(key='euc_cutoff', default=0.187),
+        Parameter(key='cos_cutoff', default=0.07),
     ]
 
     # Use config/setting loader.
@@ -246,7 +250,10 @@ if __name__ == "__main__":
     command = [
         'python {0} '.format(instability_calculator),
         '-i {0} '.format(filtered_kmer_counts),
-        '-o {0}'.format(output_filepath)
+        '-o {0} '.format(output_filepath),
+        '--difference-cutoff {0}'.format(config['dif_cutoff']),
+        '--distance-cutoff {0}'.format(config['euc_cutoff']),
+        '--dissimilarity-cutoff {0}'.format(config['cos_cutoff']),
         ]
 
     print('\\\n'.join(command))

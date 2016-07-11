@@ -287,6 +287,51 @@ def load_loci(input_filepath):
     return loci
     # end load_loci()
 
+# Helper method for status output.
+def status_call(cutoff, value):
+    if value >= cutoff:
+        return 'Unstable'
+    else:
+        return 'Stable'
+    # end status_call()
+
+# Generates output for estimated sample status based on
+# cutoff values provided to the script.
+def status_output(filepath, cutoffs, difference, distance, dissimilarity):
+    output = []
+    output.append(['{:28s}'.format('Metric'), '(Abbr)', 'Cutoff', 'Value', 'Status'])
+    
+    output.append([
+        'Average Step-Wise Difference',
+        '(DIF)',
+        cutoffs['DIF'],
+        round(difference, 4),
+        status_call(cutoffs['DIF'], difference),
+        ])
+
+    output.append([
+        'Average Euclidean Distance',
+        '(EUC)',
+        cutoffs['EUC'],
+        round(distance, 4),
+        status_call(cutoffs['EUC'], distance),
+        ])
+
+    output.append([
+        'Average Cosine Dissimilarity',
+        '(COS)',
+        cutoffs['COS'],
+        round(distance, 4),
+        status_call(cutoffs['COS'], dissimilarity),
+        ])
+
+    fileout = open(filepath, 'w')
+    for line in output:
+        line = '\t'.join([str(x) for x in line])
+        print(line)
+        fileout.write(line + '\n')
+    fileout.close()
+    # end status_output()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -297,6 +342,16 @@ if __name__ == "__main__":
     parser.add_argument('-o', '--output', dest='output', type=str, required=True,
         help='Output file.')
 
+    parser.add_argument('--difference-cutoff', dest='dif_cutoff', type=float,
+        help='Default difference cutoff value for calling a sample unstable.')
+
+    parser.add_argument('--distance-cutoff', dest='euc_cutoff', type=float,
+        help='Default distance cutoff value for calling a sample unstable.')
+
+    parser.add_argument('--dissimilarity-cutoff', dest='cos_cutoff', type=float,
+        help='Default dissimilarity cutoff value for calling a sample unstable.')
+
+
     args = parser.parse_args()
 
     input_filepath = os.path.abspath(args.input)
@@ -304,7 +359,29 @@ if __name__ == "__main__":
         tprint('Error! Input file {0} does not exist.'.format(input_filepath))
         exit(1)
 
+    # Make sure default cutoff values have been specified.
+    cutoffs = {}
+    if args.dif_cutoff is None:
+        tprint('Error: Default difference cutoff must be specified!')
+        exit(1)
+    else:
+        cutoffs['DIF'] = float(args.dif_cutoff)
+
+    if args.euc_cutoff is None:
+        tprint('Error: Default distance cutoff must be specified!')
+        exit(1)
+    else:
+        cutoffs['EUC'] = float(args.euc_cutoff)
+
+    if args.cos_cutoff is None:
+        tprint('Error: Default dissimilarity cutoff must be specified!')
+        exit(1)
+    else:
+        cutoffs['COS'] = float(args.cos_cutoff)
+
+
     output_filepath = os.path.abspath(args.output)
+    status_filepath = output_filepath + '.status'
 
     loci = load_loci(input_filepath)
 
@@ -341,21 +418,22 @@ if __name__ == "__main__":
         fileout.write(line + '\n')
         # end of per-locus for loop
 
-    # Generate output for final weighted scores.
-    avg_difference = numpy.mean(values['difference'])
-    avg_distance = numpy.mean(values['distance'])
-    avg_dissimilarity = numpy.mean(values['dissimilarity'])
-    line = '\t'.join([str(x) for x in [
-        'Average',
-        '-',
-        '-',
-        round(avg_difference,4),
-        round(avg_distance,4),
-        round(avg_dissimilarity, 4)]])
-    fileout.write(line + '\n')
+
+    if len(values['difference']) > 0:
+        # Generate output for final average scores.
+        avg_difference = numpy.mean(values['difference'])
+        avg_distance = numpy.mean(values['distance'])
+        avg_dissimilarity = numpy.mean(values['dissimilarity'])
+        line = '\t'.join([str(x) for x in [
+            'Average',
+            '-',
+            '-',
+            round(avg_difference,4),
+            round(avg_distance,4),
+            round(avg_dissimilarity, 4)]])
+        fileout.write(line + '\n')
     fileout.close()
-    print("Average step-wise difference (DIF): {0}".format(round(avg_difference,4)))
-    print("Average Euclidean distance (EUC):   {0}".format(round(avg_distance,4)))
-    print("Average cosine dissimarity (COS):   {0}".format(round(avg_dissimilarity, 4)))
+
+    status_output(status_filepath, cutoffs, avg_difference, avg_distance, avg_dissimilarity)
     # Done
     exit(0)
