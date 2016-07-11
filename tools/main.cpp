@@ -51,7 +51,7 @@ int main (int argc, char** argv)
 	extern char* optarg;
 	if (argc <= 1 || strncmp(argv[1],"-h",2) == 0)
 	{
-		cout << "RepeatFinder 0.5" << endl;
+		cout << "RepeatFinder 1.0" << endl;
 		cout << "\t-m: minimum number of bases a repeat region must span to"
 			<< " be called a microsatellite. Default: 10" << endl;
 		cout << "\t-r: minimum number of repeats for a microsatellite to be"
