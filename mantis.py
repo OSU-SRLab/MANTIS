@@ -63,14 +63,14 @@ if __name__ == "__main__":
     parser.add_argument('--genome', dest='genome', type=str,
         help='Path to reference genome (FASTA).')
 
-    parser.add_argument('--difference-cutoff', dest='dif_cutoff', type=float,
-        help='Default difference cutoff value for calling a sample unstable.')
+    parser.add_argument('--difference-threshold', dest='dif_threshold', type=float,
+        help='Default difference threshold value for calling a sample unstable.')
 
-    parser.add_argument('--distance-cutoff', dest='euc_cutoff', type=float,
-        help='Default distance cutoff value for calling a sample unstable.')
+    parser.add_argument('--distance-threshold', dest='euc_threshold', type=float,
+        help='Default distance threshold value for calling a sample unstable.')
 
-    parser.add_argument('--dissimilarity-cutoff', dest='cos_cutoff', type=float,
-        help='Default dissimilarity cutoff value for calling a sample unstable.')
+    parser.add_argument('--dissimilarity-threshold', dest='cos_threshold', type=float,
+        help='Default dissimilarity threshold value for calling a sample unstable.')
 
     args = parser.parse_args()
 
@@ -99,9 +99,9 @@ if __name__ == "__main__":
         Parameter(key='mrr', default=3),
         Parameter(key='sd', default=3.0),
         Parameter(key='threads', default=1),
-        Parameter(key='dif_cutoff', default=0.4),
-        Parameter(key='euc_cutoff', default=0.187),
-        Parameter(key='cos_cutoff', default=0.07),
+        Parameter(key='dif_threshold', default=0.4),
+        Parameter(key='euc_threshold', default=0.187),
+        Parameter(key='cos_threshold', default=0.07),
     ]
 
     # Use config/setting loader.
@@ -251,9 +251,9 @@ if __name__ == "__main__":
         'python {0} '.format(instability_calculator),
         '-i {0} '.format(filtered_kmer_counts),
         '-o {0} '.format(output_filepath),
-        '--difference-cutoff {0}'.format(config['dif_cutoff']),
-        '--distance-cutoff {0}'.format(config['euc_cutoff']),
-        '--dissimilarity-cutoff {0}'.format(config['cos_cutoff']),
+        '--difference-threshold {0}'.format(config['dif_threshold']),
+        '--distance-threshold {0}'.format(config['euc_threshold']),
+        '--dissimilarity-threshold {0}'.format(config['cos_threshold']),
         ]
 
     print('\\\n'.join(command))

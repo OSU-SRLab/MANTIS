@@ -288,42 +288,43 @@ def load_loci(input_filepath):
     # end load_loci()
 
 # Helper method for status output.
-def status_call(cutoff, value):
-    if value >= cutoff:
+def status_call(threshold, value):
+    if value >= threshold:
         return 'Unstable'
     else:
         return 'Stable'
     # end status_call()
 
 # Generates output for estimated sample status based on
-# cutoff values provided to the script.
-def status_output(filepath, cutoffs, difference, distance, dissimilarity):
+# threshold values provided to the script.
+def status_output(filepath, thresholds, difference, distance, dissimilarity):
     output = []
-    output.append(['{:28s}'.format('Metric'), '(Abbr)', 'Cutoff', 'Value', 'Status'])
+    output.append(['{:26s}'.format('Average Metric Value (Abbr)'), 'Value',  'Threshold', 'Status'])
     
     output.append([
-        'Average Step-Wise Difference',
-        '(DIF)',
-        cutoffs['DIF'],
+        'Step-Wise Difference (DIF)',
         round(difference, 4),
-        status_call(cutoffs['DIF'], difference),
+        '{:<9.4f}'.format(thresholds['DIF']),
+        status_call(thresholds['DIF'], difference),
         ])
 
     output.append([
-        'Average Euclidean Distance',
-        '(EUC)',
-        cutoffs['EUC'],
+        'Euclidean Distance (EUC)',
         round(distance, 4),
-        status_call(cutoffs['EUC'], distance),
+        '{:<9.4f}'.format(thresholds['EUC']),
+        status_call(thresholds['EUC'], distance),
         ])
 
     output.append([
-        'Average Cosine Dissimilarity',
-        '(COS)',
-        cutoffs['COS'],
+        'Cosine Dissimilarity (COS)',
         round(distance, 4),
-        status_call(cutoffs['COS'], dissimilarity),
+        '{:<9.4f}'.format(thresholds['COS']),
+        status_call(thresholds['COS'], dissimilarity),
         ])
+
+    output.append(['\nNote: The authors recommend the use of the Step-Wise Difference\n' + 
+        'metric for determining the status of the sample. Any value greater\n' +
+        'than or equal to the threshold is called unstable.'])
 
     fileout = open(filepath, 'w')
     for line in output:
@@ -342,14 +343,14 @@ if __name__ == "__main__":
     parser.add_argument('-o', '--output', dest='output', type=str, required=True,
         help='Output file.')
 
-    parser.add_argument('--difference-cutoff', dest='dif_cutoff', type=float,
-        help='Default difference cutoff value for calling a sample unstable.')
+    parser.add_argument('--difference-threshold', dest='dif_threshold', type=float,
+        help='Default difference threshold value for calling a sample unstable.')
 
-    parser.add_argument('--distance-cutoff', dest='euc_cutoff', type=float,
-        help='Default distance cutoff value for calling a sample unstable.')
+    parser.add_argument('--distance-threshold', dest='euc_threshold', type=float,
+        help='Default distance threshold value for calling a sample unstable.')
 
-    parser.add_argument('--dissimilarity-cutoff', dest='cos_cutoff', type=float,
-        help='Default dissimilarity cutoff value for calling a sample unstable.')
+    parser.add_argument('--dissimilarity-threshold', dest='cos_threshold', type=float,
+        help='Default dissimilarity threshold value for calling a sample unstable.')
 
 
     args = parser.parse_args()
@@ -359,25 +360,25 @@ if __name__ == "__main__":
         tprint('Error! Input file {0} does not exist.'.format(input_filepath))
         exit(1)
 
-    # Make sure default cutoff values have been specified.
-    cutoffs = {}
-    if args.dif_cutoff is None:
-        tprint('Error: Default difference cutoff must be specified!')
+    # Make sure default threshold values have been specified.
+    thresholds = {}
+    if args.dif_threshold is None:
+        tprint('Error: Default difference threshold must be specified!')
         exit(1)
     else:
-        cutoffs['DIF'] = float(args.dif_cutoff)
+        thresholds['DIF'] = float(args.dif_threshold)
 
-    if args.euc_cutoff is None:
-        tprint('Error: Default distance cutoff must be specified!')
+    if args.euc_threshold is None:
+        tprint('Error: Default distance threshold must be specified!')
         exit(1)
     else:
-        cutoffs['EUC'] = float(args.euc_cutoff)
+        thresholds['EUC'] = float(args.euc_threshold)
 
-    if args.cos_cutoff is None:
-        tprint('Error: Default dissimilarity cutoff must be specified!')
+    if args.cos_threshold is None:
+        tprint('Error: Default dissimilarity threshold must be specified!')
         exit(1)
     else:
-        cutoffs['COS'] = float(args.cos_cutoff)
+        thresholds['COS'] = float(args.cos_threshold)
 
 
     output_filepath = os.path.abspath(args.output)
@@ -434,6 +435,6 @@ if __name__ == "__main__":
         fileout.write(line + '\n')
     fileout.close()
 
-    status_output(status_filepath, cutoffs, avg_difference, avg_distance, avg_dissimilarity)
+    status_output(status_filepath, thresholds, avg_difference, avg_distance, avg_dissimilarity)
     # Done
     exit(0)
