@@ -6,8 +6,8 @@ program developed for detecting microsatellite instability from
 paired-end BAM files. To perform analysis, the program needs a tumor BAM
 and a matched normal BAM file (produced using the same pipeline) to
 determine the instability score between the two samples within the pair.
-Longer reads (ideally, 100 bp) are recommended, as shorter reads are
-unlikely to entirely cover the microsatellite loci, and will be
+Longer reads (ideally, 100 bp or longer) are recommended, as shorter reads
+are unlikely to entirely cover the microsatellite loci, and will be 
 discarded after failing the quality control filters.
 
 Requirements
@@ -68,17 +68,14 @@ or 1-based.
 Configuration File
 ==================
 
-To facilitate running many samples through or incorporation in a
-pipeline, the program allows the use of a configuration file. By
-default, the program will search for a configuration file with the
-filename “mantis\_config.cfg” in the root folder of the program.
-Alternatively, a path to the configuration file can also be provided
-using the -cfg/--config command line parameter.
+To facilitate running many samples, or incorporation of MANTIS in a pipeline,
+a configuration file may be used. By default, the program will search for a
+configuration file with the filename “mantis\_config.cfg” in the root folder 
+of the program. Alternatively, a path to the configuration file can be 
+provided using the -cfg/--config command line parameter.
 
-With one setting per line, consisting of the parameter name, an equals
-sign, and the value for the setting the file should contain settings
-that match the named parameters of the program following the format
-shown below:
+The file should contain settings that match the named parameters of the 
+program according to the following format:
 
 genome = /path/to/reference/genome.fasta
 
@@ -87,14 +84,14 @@ bedfile = /path/to/my/loci.bed
 Configuration Parameter Priority
 --------------------------------
 
-The program is designed to give command line parameters higher priority
-over the settings in the configuration file which takes precedence over
-the default values. For example, the minimum read quality setting has a
-value of 20.0 by default. If a different value (e.g. -mrq = 30.0) is
-specified in the configuration file, it will take precedence. However,
-if the command line parameter (e.g. -mrq 25.0), is supplied when running
-the program, the value of 25.0 will be used as it takes precedence over
-the others.
+Parameters specified on the command line have highest priority, followed
+by settings in the configuration file, and then by default values. For
+example, the minimum read quality setting has a value of 20.0 by default.
+If a different value (e.g. -mrq = 30.0) is specified in the configuration
+file, it will override the default. However, if the command line parameter
+(e.g. -mrq 25.0), is supplied when running the program, the value of 25.0 
+will be used, as command line parameters override both the configuration 
+file and the default.
 
 Multithreading Support
 ======================
@@ -113,11 +110,10 @@ Parameters
 
 The software is programmed to use default parameters if the user chooses
 not to customize the settings. These default cut-offs have been selected
-during testing on various datasets. However, to customize the usage of
-the tool to better fit the user’s data, one could provide various
-command line parameters to the program, either directly on the command
-line, or using a configuration file (see above). The available
-parameters are listed below:
+during testing on various datasets. However, to customize the usage of the
+tool to better fit the user’s data, one could provide various command line
+parameters to the program, either directly on the command line and/or with
+a configuration file (see above). The available parameters are listed below:
 
 |  **Flag(s)**       |          **Name**  | **Description** |
 | --- | --- | --- |
@@ -152,3 +148,34 @@ less stringent set of thresholds for whole-exome data, as follows:
 -mlc 20
 
 -mrr 1
+
+
+
+RepeatFinder
+=================
+
+Included with MANTIS is a tool, RepeatFinder, for finding microsatellites
+within a reference genome. RepeatFinder is written in C++, and should
+compile with GCC using the included Makefile on almost any Linux system.
+RepeatFinder can be run with default parameters by executing:
+
+./RepeatFinder –i /path/to/genome.fasta -o /path/to/loci.bed
+
+The resulting BED file is suitable for use with MANTIS immediately (with
+the -b/--bedfile option), or it may be filtered with bedtools to intersect
+to for regions of interest.
+
+Several parameters are available to customize microsatellite finding with
+RepeatFinder, as follows:
+
+
+| Flag(s) | Description |
+| ------- | ----------- |
+| -m | Minimum number of bases that a repeat region must span to call a microsatellite. Default: 10 |
+| -r | Minimum number of k-mer repeats to call a microsatellite. Default: 3 |
+| -l | Minimum k-mer length (bp). Default: 1 |
+| -L | Maximum k-mer length (bp). NOTE: Considering 6-mers is not recommended, as this will include telomere repeats. Default: 5 |
+| -i | Path to the reference genome in FASTA format. |
+| -o | Output path to the desired BED file containing the targeted MSI loci. |
+
+
