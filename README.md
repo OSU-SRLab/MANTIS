@@ -24,8 +24,8 @@ must be available.
 
 Download
 ===========
-The program is freely available under the GPLv3 license from GitHub at:
-https://github.com/OSU-SRLab/MANTIS
+The program is freely available under the GPLv3 license from GitHub
+([*https://github.com/OSU-SRLab/MANTIS*](https://github.com/OSU-SRLab/MANTIS))
 
 
 Usage
