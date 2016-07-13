@@ -32,6 +32,7 @@ namespace mantis
 		Node* cur;
 		string kmer;
 		int minBases;
+		int maxBases;
 		int minRepeats;
 		
 		bool isCharInIgnore(const char& c) const;
@@ -46,11 +47,12 @@ namespace mantis
 		* @warning user_ignoreChar is currently ignored, and any repeat patterns containing N will not be reported.
 		* @param user_k the value of k (repeat sequence size) for this CLL to detect
 		* @param user_minBases the minimum number of bp a repeat sequence must cover to be reported
+		* @param user_maxBases the maximum number of bp a repeat sequence must cover to be reported
 		* @param user_minRepeats the minimum number of times a repeat sequence must repeat to be reported
 		* @param user_ignoreChar a string of characters, the presence of which in a sequence will cause it not
 		*        to be reported. Currently IGNORED.
 		*/
-		CircularLinkedList(int user_k, int user_minBases, int user_minRepeats, const string& user_ignoreChar);
+		CircularLinkedList(int user_k, int user_minBases, int user_maxBases, int user_minRepeats, const string& user_ignoreChar);
 
 		~CircularLinkedList();
 

@@ -42,6 +42,7 @@ int main (int argc, char** argv)
 	int minRepeatLength = 1;
 	int maxRepeatLength = 5;
 	int minBases = 10;
+	int maxBases = 100;
 	int minRepeats = 3;
 	int opt;
 	string fasta;
@@ -54,6 +55,8 @@ int main (int argc, char** argv)
 		cout << "RepeatFinder 1.0" << endl;
 		cout << "\t-m: minimum number of bases a repeat region must span to"
 			<< " be called a microsatellite. Default: 10" << endl;
+		cout << "\t-M: maximum number of bases a repeat region must span to"
+			<< " be called a microsatellite. Default: 100" << endl;
 		cout << "\t-r: minimum number of repeats for a microsatellite to be"
 			<< " called. Default: 3" << endl;
 		cout << "\t-l: minimum k-mer length. Default: 1" << endl;
@@ -69,6 +72,9 @@ int main (int argc, char** argv)
 		{
 			case 'm':
 				minBases = atoi(optarg);
+				break;
+			case 'M':
+				maxBases = atoi(optarg);
 				break;
 			case 'r':
 				minRepeats = atoi(optarg);
@@ -103,7 +109,7 @@ int main (int argc, char** argv)
 	for (int i = 0; i < numRepeatFinders; i++)
 	{
 		clls[i] = new CircularLinkedList(i + minRepeatLength, minBases,
-			minRepeats, "N");
+			maxBases, minRepeats, "N");
 	}
 
 	string curChr;
@@ -175,7 +181,7 @@ int main (int argc, char** argv)
 				{
 					delete clls[i];
 					clls[i] = new CircularLinkedList(i + minRepeatLength,
-						minBases, minRepeats, "N");
+						minBases, maxBases, minRepeats, "N");
 				}
 			}
 			else first = false;

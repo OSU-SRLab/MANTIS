@@ -2,10 +2,11 @@
 
 namespace mantis
 {
-	CircularLinkedList::CircularLinkedList(int user_k, int user_minBases, int user_minRepeats, const string& user_ignoreChar)
+	CircularLinkedList::CircularLinkedList(int user_k, int user_minBases, int user_maxBases, int user_minRepeats, const string& user_ignoreChar)
 	{
 		k = user_k;
 		minBases = user_minBases;
+		maxBases = user_maxBases;
 		minRepeats = user_minRepeats;
 		curSeqLength = 0;
 		numIgnoreChars = 0;
@@ -133,7 +134,7 @@ namespace mantis
 	bool CircularLinkedList::endSequence()
 	{
 		bool result = false;
-		if (!seqHasIgnoreChrs() && curSeqLength >= minBases)
+		if (!seqHasIgnoreChrs() && curSeqLength >= minBases && curSeqLength <= maxBases)
 		{
 			repeatCount = curSeqLength / k;
 			if (repeatCount >= minRepeats)
