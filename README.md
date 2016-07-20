@@ -172,6 +172,7 @@ RepeatFinder, as follows:
 | Flag(s) | Description |
 | ------- | ----------- |
 | -m | Minimum number of bases that a repeat region must span to call a microsatellite. Default: 10 |
+| -M | Maximum number of bases that a repeat region must span to be called a microsatellite. Default: 100 |
 | -r | Minimum number of k-mer repeats to call a microsatellite. Default: 3 |
 | -l | Minimum k-mer length (bp). Default: 1 |
 | -L | Maximum k-mer length (bp). NOTE: Considering 6-mers is not recommended, as this will include telomere repeats. Default: 5 |
