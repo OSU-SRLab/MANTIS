@@ -112,7 +112,7 @@ class CIGAR(object):
 	def to_array(string):
 		if string == '*':
 			return []
-		tokens = ['M','S','N','I','D']
+		tokens = ['M','S','N','I','D','H']
 		for token in tokens:
 			string = string.replace(token, token + '.')
 		string = filter(None, string.split('.'))
