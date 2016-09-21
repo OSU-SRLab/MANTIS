@@ -433,8 +433,12 @@ if __name__ == "__main__":
             round(avg_distance,4),
             round(avg_dissimilarity, 4)]])
         fileout.write(line + '\n')
+        output_status_block = True
+    else:
+        output_status_block = False
     fileout.close()
 
-    status_output(status_filepath, thresholds, avg_difference, avg_distance, avg_dissimilarity)
+    if output_status_block:
+        status_output(status_filepath, thresholds, avg_difference, avg_distance, avg_dissimilarity)
     # Done
     exit(0)
