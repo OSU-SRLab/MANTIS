@@ -49,7 +49,11 @@ class SAMRead(object):
 				seq_length += size
 				gen_length += size
 				trimmed_cigar.append([token, size])
-			index += size				
+
+			if token != 'H':
+				# Hard-clipped segments are not included in the sequence;
+				# only increment index for non-hard clipped section.
+				index += size				
 		# Update self with updated values
 		self.length = seq_length
 		self.seq = ''.join(trimmed_seq)
@@ -69,7 +73,11 @@ class SAMRead(object):
 
 	def calculate_quality(self, offset=0, length=0):
 		if length < 1:
-			length = len(self.qual) - 1
+			length = len(self.qual)
+
+		if length is 0:
+			return 0.0
+
 
 		total_score = 0
 		for i in range(offset, offset+length):
