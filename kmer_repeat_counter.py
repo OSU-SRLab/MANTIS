@@ -374,6 +374,8 @@ class KmerRepeatCounter:
         if self.debug_output:
             tprint('Extractor> Thread starting for {0}'.format(filename))
         source = pysam.AlignmentFile(filename, 'rb')   
+
+        available_chromosomes = set([hash(str(x)) for x in source.references])
         for locus in loci:
 
             # Format the chromosome to be compatible with how the reads are
@@ -386,37 +388,37 @@ class KmerRepeatCounter:
                 # Remove the 'chr' prefix.
                 chromosome = chromosome[3:]
 
+            if hash(chromosome) in available_chromosomes:
+                for read in source.fetch(chromosome, locus.start - 5, locus.end + 5):
+                    # Use AlignedSegment object to create a list, which is
+                    # then used in the creation of the SAMRead object,
+                    # since the AlignedSegment objects are C-structs and cannot
+                    # be passed to the consumer threads.
+                    data = [
+                        read.query_name,
+                        read.flag,
+                        chromosome,
+                        read.reference_start,
+                        read.mapping_quality,
+                        read.cigarstring,
+                        '', 
+                        '',
+                        '',
+                        read.query_sequence,
+                        KmerRepeatCounter.quality_scores_to_symbols(read.query_qualities)
+                    ]
+                    # CIGAR of None means it was likely an asterisk (*), so the read
+                    # will get ignored since something was wrong with the alignment.
+                    if read.cigarstring is not None:
+                        read = SAMRead('\t'.join([str(x) for x in data]))
+                        item = [locus, read]
 
-            for read in source.fetch(chromosome, locus.start - 5, locus.end + 5):
-                # Use AlignedSegment object to create a list, which is
-                # then used in the creation of the SAMRead object,
-                # since the AlignedSegment objects are C-structs and cannot
-                # be passed to the consumer threads.
-                data = [
-                    read.query_name,
-                    read.flag,
-                    chromosome,
-                    read.reference_start,
-                    read.mapping_quality,
-                    read.cigarstring,
-                    '', 
-                    '',
-                    '',
-                    read.query_sequence,
-                    KmerRepeatCounter.quality_scores_to_symbols(read.query_qualities)
-                ]
-                # CIGAR of None means it was likely an asterisk (*), so the read
-                # will get ignored since something was wrong with the alignment.
-                if read.cigarstring is not None:
-                    read = SAMRead('\t'.join([str(x) for x in data]))
-                    item = [locus, read]
-
-                    # Use semaphores to handle proper writing into the queue.
-                    empty.acquire()
-                    mutex.acquire()
-                    queue.put(item)
-                    mutex.release()
-                    full.release()
+                        # Use semaphores to handle proper writing into the queue.
+                        empty.acquire()
+                        mutex.acquire()
+                        queue.put(item)
+                        mutex.release()
+                        full.release()
 
         source.close()
 
