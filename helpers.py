@@ -43,14 +43,20 @@ chr1  10357206    10357223    (T)17   0   +
 """
 def check_bedfile_format(filepath):
     with open(filepath, 'Ur') as f:
+    	line_number = 0
         for line in f:
             line = line.strip()
+            line_number += 1
             if len(line):
                 line = line.split('\t')
                 if len(line) != 6:
                     print('Error: MANTIS expects a 6-column BED file with' + 
                         ' the 4th column containing the kmer repeat' + 
                         ' sequence and count (e.g. (T)15 or (CAC)5 ).')
+                    print('\nOffending line (line {0}) has:'.format(line_number))
+                    for n, value in enumerate(line):
+                        print('[{0}]\t{1}'.format(n, value))
+
                     return False
                 else:
                     # Check the k-mer column
@@ -80,7 +86,7 @@ def check_bedfile_format(filepath):
                             ' the repeat unit wrapped in parentheses,' +
                             ' followed by the expected number of repeats.')
                         return False
-        return True                  
+               
     # end .check_bedfile_format()
 
 
