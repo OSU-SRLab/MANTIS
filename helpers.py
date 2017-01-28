@@ -86,7 +86,7 @@ def check_bedfile_format(filepath):
                             ' the repeat unit wrapped in parentheses,' +
                             ' followed by the expected number of repeats.')
                         return False
-               
+        return True
     # end .check_bedfile_format()
 
 

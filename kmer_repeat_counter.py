@@ -328,9 +328,16 @@ class KmerRepeatCounter:
                 with_chr = 'chr{0}'.format(with_chr)
             without_chr = with_chr[3:]
 
+
+            # Make sure the start coordinate isn't below 1
+            start_pos = locus.start - 5
+            if start_pos < 1:
+                start_pos = 1
+            end_pos = locus.end + 5
+
             # First check if we can find one WITH the 'chr' prefix.
             try:
-                reads = source.fetch(with_chr,locus.start - 5, locus.end + 5)
+                reads = source.fetch(with_chr, start_pos, end_pos)
                 # If we proceed beyond this line, we found matches
                 found_with_chr = True
                 break
@@ -340,7 +347,7 @@ class KmerRepeatCounter:
             if not found_with_chr:
                 # Check if we can find reads WITHOUT the 'chr' prefix.
                 try:
-                    reads = source.fetch(without_chr,locus.start - 5, locus.end + 5)
+                    reads = source.fetch(without_chr, start_pos, end_pos)
                     # If we proceed beyond this line, we found matches
                     found_without_chr = True
                     break
@@ -389,7 +396,15 @@ class KmerRepeatCounter:
                 chromosome = chromosome[3:]
 
             if hash(chromosome) in available_chromosomes:
-                for read in source.fetch(chromosome, locus.start - 5, locus.end + 5):
+
+                # Make sure the start coordinate isn't below 1
+                start_pos = locus.start - 5
+                if start_pos < 1:
+                    start_pos = 1
+                end_pos = locus.end + 5
+
+
+                for read in source.fetch(chromosome, start_pos, end_pos):
                     # Use AlignedSegment object to create a list, which is
                     # then used in the creation of the SAMRead object,
                     # since the AlignedSegment objects are C-structs and cannot
