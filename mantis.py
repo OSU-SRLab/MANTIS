@@ -28,17 +28,15 @@ if __name__ == "__main__":
     parser.add_argument('-n', '--normal', dest='normal', type=str, required=True,
         help='Normal input BAM file.')
 
-    parser.add_argument('-t', '--tumor', dest='tumor', type=str, required=True,
+    parser.add_argument('-t', '--tumor', dest='tumor', type=str,  required=True,
         help='Tumor input BAM file.')
 
     parser.add_argument('--threads', dest='threads', type=int,
         help='How many threads (processes) to use.')
 
-    parser.add_argument('-b', '--bedfile', dest='bedfile', type=str, 
-        required=True, help='Input BED file.')
+    parser.add_argument('-b', '--bedfile', dest='bedfile', type=str, help='Input BED file.')
 
-    parser.add_argument('-o', '--output', dest='output', type=str, 
-        required=True, help='Output filename.')
+    parser.add_argument('-o', '--output', dest='output', type=str, help='Output filename.')
 
     parser.add_argument('-mrq', '--min-read-quality', dest='mrq', type=float, 
         help='Minimum average read quality.')
@@ -60,7 +58,7 @@ if __name__ == "__main__":
         help='Standard deviations from mean before repeat count is ' +
         'considered an outlier')
 
-    parser.add_argument('--genome', dest='genome', type=str,
+    parser.add_argument('--genome', dest='genome', type=str, 
         help='Path to reference genome (FASTA).')
 
     parser.add_argument('--difference-threshold', dest='dif_threshold', type=float,
@@ -91,7 +89,7 @@ if __name__ == "__main__":
         Parameter(key='normal_filepath', arg_key='normal', required=True),
         Parameter(key='tumor_filepath', arg_key='tumor', required=True),
         Parameter(key='output_filepath', arg_key='output', required=True),
-        Parameter(key='genome'),
+        Parameter(key='genome', required=True),
         Parameter(key='mrq', default=25.0),
         Parameter(key='mlq', default=30.0),
         Parameter(key='mrl', default=35),
@@ -138,7 +136,7 @@ if __name__ == "__main__":
 
     if 'normal_filepath' not in config:
         print('Error: Normal BAM file not provided!')
-        exit()
+        exit(1)
     else:
         normal_filepath = os.path.abspath(config['normal_filepath'])
         if not os.path.isfile(normal_filepath):
@@ -165,6 +163,16 @@ if __name__ == "__main__":
                 print('Error: {0} needs corresponding .bai index file!'.format(tumor_filepath))
                 exit(1)            
             config['tumor_filepath'] = tumor_filepath
+    
+    if 'genome' not in config:
+        print('Error: Genome not provided!')
+        exit(1)
+    else:
+        genome_filepath = os.path.abspath(config['genome'])
+        if not os.path.isfile(genome_filepath):
+            print('Error: {0} does not exist!'.format(genome_filepath))
+            exit(1)
+        
 
     if args.output is None:
         print('Error: Output filename not specified!')
