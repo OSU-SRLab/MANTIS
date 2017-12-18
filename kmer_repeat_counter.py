@@ -1,6 +1,6 @@
 # @file kmer_repeat_counter.py
 # @author Esko Kautto (esko.kautto@osumc.edu)
-# @updated 2016-07-05
+# @updated 2017-12-18
 
 import os
 import argparse
@@ -14,6 +14,7 @@ from structures import SAMRead, CIGAR, Locus, MSILocus
 from offset_finder import OffsetFinder
 from helpers import iteritems, tprint, timestamp
 from defaults import Parameter, load_settings
+import re
 
 
 
@@ -55,7 +56,7 @@ class MSILocusLoader:
         return loci
         # end .load_loci()
 
-
+    strip_coord_re = re.compile(r'^[\d\-]+')
     """
     Fixes any off-by-one errors for the locus that could result from
     different interpretations of the open and closed ends of the BED
@@ -68,7 +69,10 @@ class MSILocusLoader:
             locus.start - 1, 
             locus.end + 1)
         
-        sequence = self.get_sequence(position)
+        raw_sequence = self.get_sequence(position)
+        #accommodate newer versions of PySam, which causes this to return chromosome and position
+        raw_sequence = raw_sequence.split(":")[-1]
+        sequence = MSILocusLoader.strip_coord_re.sub("", raw_sequence)
         if sequence[1:1+locus.kmer_length] != locus.kmer:
             # Sequence doesn't start where expected; shift accordingly.
             if sequence[0:locus.kmer_length] == locus.kmer:
