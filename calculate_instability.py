@@ -317,7 +317,7 @@ def status_output(filepath, thresholds, difference, distance, dissimilarity):
 
     output.append([
         'Cosine Dissimilarity (COS)',
-        round(distance, 4),
+        round(dissimilarity, 4),
         '{:<9.4f}'.format(thresholds['COS']),
         status_call(thresholds['COS'], dissimilarity),
         ])
