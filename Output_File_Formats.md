@@ -6,7 +6,7 @@ For each run, MANTIS generates four output files. The file ending in .status con
 *_kmer_counts.txt
 -----------------
 
-This file contains, for each locus, the number of reads in the tumor and normal sample which support different numbers of k-mer repeats. Columns are as follows:
+This file contains, for each locus with sufficient coverage in normal and tumor, the number of reads in the tumor and normal sample which support different numbers of k-mer repeats. Columns are as follows:
 
 |Column Number|Column Name|Description|
 |---|---|---|
@@ -21,7 +21,7 @@ Note that minimum quality and coverage filters have been enforced, but outliners
 --------------------------
 
 Similarly to kmer\_counts.txt, this file summarizes the numbers of reads in the tumor and normal sample which support different numbers of k-mer repeats. However, the contents of this file reflect outlier filtering, and therefore consist of all reads that were used to compute the MANTIS score.  
-File format is identical to that of kmer\_counts.txt
+File format is identical to that of kmer\_counts.txt.
 
 *.txt
 -----
