@@ -29,7 +29,7 @@ The program is freely available under the GPLv3 license from GitHub
 
 Citation
 ========
-Please cite the [https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5352334/](MANTIS publication) if you utilize this tool.  
+Please cite the [MANTIS publication](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5352334/) if you utilize this tool.  
 Kautto, E. A., Bonneville, R., Miya, J., Yu, L., Krook, M. A., Reeser, J. W., & Roychowdhury, S. (2017). Performance evaluation for rapid detection of pan-cancer microsatellite instability with MANTIS. Oncotarget, 8(5), 7452–7463. http://doi.org/10.18632/oncotarget.13918. PMID: 27980218.
 
 Usage
