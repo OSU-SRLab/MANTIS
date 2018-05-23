@@ -4,6 +4,7 @@
 
 import os
 import argparse
+import functools
 import subprocess
 import time
 from datetime import datetime, timedelta
@@ -15,7 +16,7 @@ from offset_finder import OffsetFinder
 from helpers import iteritems, tprint, timestamp
 from defaults import Parameter, load_settings
 import re
-
+import sys
 
 
 class MSILocusLoader:
@@ -711,6 +712,39 @@ def generate_config(args):
     return config
     # end .generate_config()
 
+strip_chr_re = re.compile(r'^chr')
+#Helper method for ordering loci
+def cmp_loci(x, y):
+    def parse_locus(l):
+        pieces = l.split(':')
+        chr = strip_chr_re.sub("", pieces[0])
+        pieces = pieces[1].split('-')
+        start = int(pieces[0])
+        end = int(pieces[1])
+        return (chr, start, end)
+    x_chr, x_start, x_end = parse_locus(x)
+    y_chr, y_start, y_end = parse_locus(y)
+    if (x_chr.isdigit() and not y_chr.isdigit()):
+        return -1
+    elif (y_chr.isdigit() and not x_chr.isdigit()):
+        return 1
+    elif x_chr.isdigit():
+        x_chr = int(x_chr)
+        y_chr = int(y_chr)
+    if (x_chr < y_chr):
+        return -1
+    elif (x_chr > y_chr):
+        return 1
+    if (x_start < y_start):
+        return -1
+    elif (x_start > y_start):
+        return 1
+    elif (x_end < y_end):
+        return -1
+    elif (x_end > y_end):
+        return 1
+    else:
+        return 0
 
 """
 Write the output of the program into the target file.
@@ -725,7 +759,10 @@ def write_output(filepath, normal, tumor):
 
     loci = set(normal.keys())
     loci = loci.union(tumor.keys())
-    loci = sorted(loci)
+    if (sys.version_info > (3, 0)):
+        loci = sorted(loci, key=functools.cmp_to_key(cmp_loci))
+    else:
+        loci = sorted(loci, cmp=cmp_loci)
     header = '\t'.join(['Locus','Repeats','Normal','Tumor'])
     fileout.write(header + '\n')
     for locus in loci:

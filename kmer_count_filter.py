@@ -1,6 +1,6 @@
 # @file kmer_count_filter.py
 # @author Esko Kautto (esko.kautto@osumc.edu)
-# @updated 2016-06-16
+# @updated 2018-05-23
 
 import os
 import argparse
@@ -232,10 +232,12 @@ class MANTIS_Filter(object):
         fileout = open(output_filepath, 'w')
         header = ['Locus', 'Repeats', 'Normal', 'Tumor']
         fileout.write('\t'.join(header) + '\n')
-        for l, locus in sorted(iteritems(self.filtered_loci)):
-            output = locus.generate_output()
-            for line in output:
-                fileout.write('\t'.join(line) + '\n')
+        for l in self.ordered_loci:
+            if l in self.filtered_loci:
+                locus = self.filtered_loci[l]
+                output = locus.generate_output()
+                for line in output:
+                    fileout.write('\t'.join(line) + '\n')
         fileout.close()
         return True
         # end .write_output()
@@ -247,6 +249,7 @@ class MANTIS_Filter(object):
     """
     def load_loci(self, input_filepath):
         self.loci = {}
+        self.ordered_loci = []
         with open(input_filepath, 'Ur') as f:
             header = True
             for line in f:
@@ -259,6 +262,7 @@ class MANTIS_Filter(object):
                 line = line.strip().split('\t')
                 if line[0] not in self.loci:
                     self.loci[line[0]] = MANTIS_Filter.Locus()
+                    self.ordered_loci.append(line[0])
                 self.loci[line[0]].add(line)
         # end .load_loci()
 
