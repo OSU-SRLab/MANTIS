@@ -6,6 +6,9 @@ import os
 import numpy
 from copy import deepcopy
 import argparse
+import functools
+import re
+import sys
 from helpers import iteritems, tprint, timestamp
 
 
@@ -334,6 +337,40 @@ def status_output(filepath, thresholds, difference, distance, dissimilarity):
     fileout.close()
     # end status_output()
 
+strip_chr_re = re.compile(r'^chr')
+#Helper method for ordering loci
+def cmp_loci(x, y):
+    def parse_locus(l):
+        pieces = l.split(':')
+        chr = strip_chr_re.sub("", pieces[0])
+        pieces = pieces[1].split('-')
+        start = int(pieces[0])
+        end = int(pieces[1])
+        return (chr, start, end)
+    x_chr, x_start, x_end = parse_locus(x)
+    y_chr, y_start, y_end = parse_locus(y)
+    if (x_chr.isdigit() and not y_chr.isdigit()):
+        return -1
+    elif (y_chr.isdigit() and not x_chr.isdigit()):
+        return 1
+    elif x_chr.isdigit():
+        x_chr = int(x_chr)
+        y_chr = int(y_chr)
+    if (x_chr < y_chr):
+        return -1
+    elif (x_chr > y_chr):
+        return 1
+    if (x_start < y_start):
+        return -1
+    elif (x_start > y_start):
+        return 1
+    elif (x_end < y_end):
+        return -1
+    elif (x_end > y_end):
+        return 1
+    else:
+        return 0
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
@@ -395,7 +432,13 @@ if __name__ == "__main__":
     # Iterate through all the results to generate the output. As part of the
     # loop, count the weighted values for each metric.
     values = {'difference': [], 'distance': [] , 'dissimilarity': []}
-    for l, locus in sorted(iteritems(loci)):
+    ordered_loci = None
+    if sys.version_info > (3, 0):
+        ordered_loci = sorted(loci.keys(), key=functools.cmp_to_key(cmp_loci))
+    else:
+        ordered_loci = sorted(loci.keys(), cmp=cmp_loci)
+    for l in ordered_loci:
+        locus = loci[l]
         # Calculate post-normalization metrics
         locus.normalize()
         difference = Difference.get(locus)
