@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 # @file mantis.py
 # @author Esko Kautto (esko.kautto@osumc.edu)
 # @updated 2016-07-05
@@ -38,27 +41,27 @@ if __name__ == "__main__":
 
     parser.add_argument('-o', '--output', dest='output', type=str, help='Output filename.')
 
-    parser.add_argument('-mrq', '--min-read-quality', dest='mrq', type=float, 
+    parser.add_argument('-mrq', '--min-read-quality', dest='mrq', type=float,
         help='Minimum average read quality.')
 
     parser.add_argument('-mlq', '--min-locus-quality', dest='mlq', type=float,
         help='Minimum average locus quality.')
 
-    parser.add_argument('-mrl', '--min-read-length', dest='mrl', type=int, 
+    parser.add_argument('-mrl', '--min-read-length', dest='mrl', type=int,
         help='Minimum (unclipped/unmasked) read length.')
 
-    parser.add_argument('-mlc', '--min-locus-coverage', dest='mlc', type=int, 
+    parser.add_argument('-mlc', '--min-locus-coverage', dest='mlc', type=int,
         help='Minimum coverage required for each of the normal ' +
         'and tumor results.')
 
-    parser.add_argument('-mrr', '--min-repeat-reads', dest='mrr', type=int, 
+    parser.add_argument('-mrr', '--min-repeat-reads', dest='mrr', type=int,
         help='Minimum reads supporting a specific repeat count.')
 
     parser.add_argument('-sd', '--standard-deviations', dest='sd', type=float,
         help='Standard deviations from mean before repeat count is ' +
         'considered an outlier')
 
-    parser.add_argument('--genome', dest='genome', type=str, 
+    parser.add_argument('--genome', dest='genome', type=str,
         help='Path to reference genome (FASTA).')
 
     parser.add_argument('--difference-threshold', dest='dif_threshold', type=float,
@@ -108,10 +111,10 @@ if __name__ == "__main__":
     # Convert any variables that should be filepaths into the absolute
     # filepaths of the values.
     filepath_vars = [
-        'bedfile', 
-        'normal_filepath', 
-        'tumor_filepath', 
-        'output_filepath', 
+        'bedfile',
+        'normal_filepath',
+        'tumor_filepath',
+        'output_filepath',
         'genome',
         ]
 
@@ -120,7 +123,7 @@ if __name__ == "__main__":
             config[key] = os.path.abspath(config[key])
 
 
-        
+
     if 'bedfile' not in config:
         print('Error: BED file not provided!')
         exit(1)
@@ -148,7 +151,7 @@ if __name__ == "__main__":
                 print('Error: {0} needs corresponding .bai index file!'.format(normal_filepath))
                 exit(1)
             config['normal_filepath'] = normal_filepath
-    
+
     if 'tumor_filepath' not in config:
         print('Error: Tumor BAM file not provided!')
         exit(1)
@@ -161,9 +164,9 @@ if __name__ == "__main__":
             # Make sure a corresponding .BAI index file exists
             if not os.path.isfile('{0}.bai'.format(tumor_filepath)):
                 print('Error: {0} needs corresponding .bai index file!'.format(tumor_filepath))
-                exit(1)            
+                exit(1)
             config['tumor_filepath'] = tumor_filepath
-    
+
     if 'genome' not in config:
         print('Error: Genome not provided!')
         exit(1)
@@ -172,7 +175,7 @@ if __name__ == "__main__":
         if not os.path.isfile(genome_filepath):
             print('Error: {0} does not exist!'.format(genome_filepath))
             exit(1)
-        
+
 
     if args.output is None:
         print('Error: Output filename not specified!')
@@ -182,7 +185,7 @@ if __name__ == "__main__":
         # Create output directory if it doesn't exist.
         output_dir = os.path.dirname(config['output_filepath'])
         if not os.path.isdir(output_dir):
-            os.makedirs(output_dir)         
+            os.makedirs(output_dir)
 
     output_filepath = os.path.abspath(args.output)
 
@@ -231,9 +234,9 @@ if __name__ == "__main__":
     if sp.returncode != 0:
         print('Error with k-mer repeat count calculations; terminating program.')
         exit(1)
-    print(response)        
+    print(response)
     print('done.')
-    
+
 
     # Run the outlier filter to get rid of outliers that are likely caused
     # due to sequencing artifacts or one-off biological events.
@@ -257,7 +260,7 @@ if __name__ == "__main__":
     if sp.returncode != 0:
         print('Error with k-mer repeat count filter; terminating program.')
         exit(1)
-    print(response)        
+    print(response)
     print('done.')
 
 

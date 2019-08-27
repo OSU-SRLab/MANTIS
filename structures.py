@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 # @file structures.py
 # @author Esko Kautto (esko.kautto@osumc.edu)
 # @updated 2016-06-16
@@ -53,7 +56,7 @@ class SAMRead(object):
             if token != 'H':
                 # Hard-clipped segments are not included in the sequence;
                 # only increment index for non-hard clipped section.
-                index += size               
+                index += size
         # Update self with updated values
         self.length = seq_length
         self.seq = ''.join(trimmed_seq)
@@ -151,7 +154,7 @@ class CIGAR(object):
 
         return length
         # end of .length()
- 
+
     @staticmethod
     def show_sequence(cigar, sequence):
         if type(cigar) is not list:
@@ -192,7 +195,7 @@ class Locus(object):
 
         return self.chromosome < other.chromosome
         # end .__lt__()
-        
+
     def locus(self):
         locus = '{0}:{1}-{2}'.format(
             self.chromosome,
