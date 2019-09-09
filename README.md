@@ -163,7 +163,7 @@ within a reference genome. RepeatFinder is written in C++, and should
 compile with GCC using the included Makefile on almost any Linux system.
 RepeatFinder can be run with default parameters by executing:
 
-./RepeatFinder –i /path/to/genome.fasta -o /path/to/loci.bed
+./RepeatFinder -i /path/to/genome.fasta -o /path/to/loci.bed
 
 The resulting BED file is suitable for use with MANTIS immediately (with
 the -b/--bedfile option), or it may be filtered with bedtools to intersect
