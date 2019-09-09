@@ -211,7 +211,7 @@ if __name__ == "__main__":
     # First job - generate file with repeat counts for each n-multiple of kmers
     kmer_count_filepath = output_filepath + '.kmer_counts'
     command = [
-        'python {0} '.format(kmer_repeat_counter),
+        '{0} {1} '.format(sys.executable, kmer_repeat_counter),
         '-b {0} '.format(os.path.abspath(config['bedfile'])),
         '-n {0} '.format(os.path.abspath(config['normal_filepath'])),
         '-t {0} '.format(os.path.abspath(config['tumor_filepath'])),
@@ -241,7 +241,7 @@ if __name__ == "__main__":
     filtered_kmer_counts = kmer_count_output.replace('kmer_counts', 'kmer_counts_filtered')
 
     command = [
-        'python {0} '.format(kmer_count_filter),
+        '{0} {1} '.format(sys.executable, kmer_count_filter),
         '-i {0} '.format(os.path.abspath(kmer_count_output)),
         '-o {0} '.format(os.path.abspath(filtered_kmer_counts)),
         '-mlc {0} '.format(config['mlc']),
