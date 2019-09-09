@@ -226,12 +226,12 @@ if __name__ == "__main__":
     print('\\\n'.join(command))
 
     print('Getting repeat counts for repeat units (k-mers) ...')
-    sp = subprocess.Popen([' '.join(command)], stdout=subprocess.PIPE, shell=True)
+    sp = subprocess.Popen([' '.join(command)], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
     response = sp.communicate()[0]
+    print(response)        
     if sp.returncode != 0:
         print('Error with k-mer repeat count calculations; terminating program.')
         exit(1)
-    print(response)        
     print('done.')
     
 
