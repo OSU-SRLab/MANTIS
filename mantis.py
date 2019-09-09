@@ -201,7 +201,7 @@ if __name__ == "__main__":
     # First, use the k-mer repeat counter to count how many repeats of each
     # repeat unit (k-mer) each locus has, both in the normal and tumor file.
     # Results will be saved into a file for passing to the next phase.
-    if '.' in output_filepath:
+    if '.' in os.path.basename(output_filepath):
         kmer_count_output = output_filepath.split('.')
         kmer_count_output[-1] = '{0}.{1}'.format('kmer_counts', kmer_count_output[-1])
         kmer_count_output = '.'.join(kmer_count_output)
