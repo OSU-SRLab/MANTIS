@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # @file mantis.py
 # @author Esko Kautto (esko.kautto@osumc.edu)
 # @updated 2016-07-05
