@@ -161,6 +161,9 @@ RepeatFinder
 Included with MANTIS is a tool, RepeatFinder, for finding microsatellites
 within a reference genome. RepeatFinder is written in C++, and should
 compile with GCC using the included Makefile on almost any Linux system.
+
+To compile RepeatFinder, first cd to the `tools` directory, and run `make`.
+
 RepeatFinder can be run with default parameters by executing:
 
 ./RepeatFinder -i /path/to/genome.fasta -o /path/to/loci.bed
