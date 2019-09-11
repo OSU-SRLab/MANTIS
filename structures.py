@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # @file structures.py
 # @author Esko Kautto (esko.kautto@osumc.edu)
 # @updated 2016-06-16

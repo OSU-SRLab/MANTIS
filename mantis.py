@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # @file mantis.py
 # @author Esko Kautto (esko.kautto@osumc.edu)
 # @updated 2016-07-05
@@ -201,7 +203,7 @@ if __name__ == "__main__":
     # First, use the k-mer repeat counter to count how many repeats of each
     # repeat unit (k-mer) each locus has, both in the normal and tumor file.
     # Results will be saved into a file for passing to the next phase.
-    if '.' in output_filepath:
+    if '.' in os.path.basename(output_filepath):
         kmer_count_output = output_filepath.split('.')
         kmer_count_output[-1] = '{0}.{1}'.format('kmer_counts', kmer_count_output[-1])
         kmer_count_output = '.'.join(kmer_count_output)
@@ -211,7 +213,7 @@ if __name__ == "__main__":
     # First job - generate file with repeat counts for each n-multiple of kmers
     kmer_count_filepath = output_filepath + '.kmer_counts'
     command = [
-        'python {0} '.format(kmer_repeat_counter),
+        '{0} {1} '.format(sys.executable, kmer_repeat_counter),
         '-b {0} '.format(os.path.abspath(config['bedfile'])),
         '-n {0} '.format(os.path.abspath(config['normal_filepath'])),
         '-t {0} '.format(os.path.abspath(config['tumor_filepath'])),
@@ -226,12 +228,12 @@ if __name__ == "__main__":
     print('\\\n'.join(command))
 
     print('Getting repeat counts for repeat units (k-mers) ...')
-    sp = subprocess.Popen([' '.join(command)], stdout=subprocess.PIPE, shell=True)
+    sp = subprocess.Popen([' '.join(command)], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
     response = sp.communicate()[0]
+    print(response)        
     if sp.returncode != 0:
         print('Error with k-mer repeat count calculations; terminating program.')
         exit(1)
-    print(response)        
     print('done.')
     
 
@@ -241,7 +243,7 @@ if __name__ == "__main__":
     filtered_kmer_counts = kmer_count_output.replace('kmer_counts', 'kmer_counts_filtered')
 
     command = [
-        'python {0} '.format(kmer_count_filter),
+        '{0} {1} '.format(sys.executable, kmer_count_filter),
         '-i {0} '.format(os.path.abspath(kmer_count_output)),
         '-o {0} '.format(os.path.abspath(filtered_kmer_counts)),
         '-mlc {0} '.format(config['mlc']),
