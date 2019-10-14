@@ -266,7 +266,7 @@ if __name__ == "__main__":
     # Calculate instability scores.
     # Analyze locus instability
     command = [
-        'python {0} '.format(instability_calculator),
+        '{0} {1} '.format(sys.executable, instability_calculator),
         '-i {0} '.format(filtered_kmer_counts),
         '-o {0} '.format(output_filepath),
         '--difference-threshold {0}'.format(config['dif_threshold']),
