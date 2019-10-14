@@ -146,7 +146,7 @@ if __name__ == "__main__":
             exit(1)
         else:
             # Make sure a corresponding .BAI index file exists
-            if not os.path.isfile('{0}.bai'.format(normal_filepath)):
+            if not os.path.isfile('{0}.bai'.format(normal_filepath)) and not os.path.isfile('{0}.bai'.format(normal_filepath[:-4])):
                 print('Error: {0} needs corresponding .bai index file!'.format(normal_filepath))
                 exit(1)
             config['normal_filepath'] = normal_filepath
@@ -161,7 +161,7 @@ if __name__ == "__main__":
             exit(1)
         else:
             # Make sure a corresponding .BAI index file exists
-            if not os.path.isfile('{0}.bai'.format(tumor_filepath)):
+            if not os.path.isfile('{0}.bai'.format(tumor_filepath)) and not os.path.isfile('{0}.bai'.format(tumor_filepath[:-4])):
                 print('Error: {0} needs corresponding .bai index file!'.format(tumor_filepath))
                 exit(1)            
             config['tumor_filepath'] = tumor_filepath

@@ -805,7 +805,7 @@ Uses PySAM to generate index for BAM file if one doesn't exist.
 """
 def generate_index_if_needed(filepath):
     index_file = os.path.abspath(filepath) + '.bai'
-    if not os.path.isfile(index_file):
+    if not os.path.isfile(index_file) and not os.path.isfile(os.path.abspath(filepath)[:-4] + '.bai'):
         # Index file doesn't exist; generate it
         pysam.index(filepath, index_file)
     return True
