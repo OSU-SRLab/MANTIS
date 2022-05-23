@@ -121,7 +121,7 @@ def required_modules_present(modules):
             missing.append(module)
 
     if len(missing):
-        for module in modules:            
+        for module in missing:            
             print('Error: You must have {0} available in your environment!'.format(module))
         print('Please check your $PYTHONPATH to make sure you have properly ' +
             'included required moudles/libraries in it.')
