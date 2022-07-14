@@ -15,7 +15,7 @@ from defaults import load_settings, Parameter
 
 
 if __name__ == "__main__":
-    prog_name = 'Microsatellite Analysis for Normal-Tumor InStability (v1.0.4)'
+    prog_name = 'Microsatellite Analysis for Normal-Tumor InStability (v1.0.5)'
     print(prog_name)
 
     # Make sure Pysam and NumPy are available in environment
