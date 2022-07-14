@@ -47,9 +47,6 @@ class MSILocusLoader:
                 for line in filein.readlines():
                     if line[0] != '@':
                         locus = MSILocus(line)
-                        if locus.chromosome[0:3] != 'chr':
-                            # Force-prepend the chr prefix
-                            locus.chromosome = 'chr{0}'.format(locus.chromosome)
 
                         # Correct any off-by-one errors that may occur because of 
                         # unstandardized open- and closed-endedness of bed file coordinates.
